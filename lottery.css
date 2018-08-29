@@ -3,7 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-#lottery{
+.demo1{
   margin: 20px;
   position: relative;
   width: 500px;
@@ -11,11 +11,11 @@
   overflow: hidden;
   border: 2px solid red;
 }
-#lottery ul {
+.demo1 ul {
   width: 9000px;
   height: 100px;
 }
-#lottery ul li {
+.demo1 ul li {
   float: left;
   width: 100px;
   height: 100px;
@@ -25,7 +25,7 @@
   font-size: 50px;
   border-left: 1px dashed #ddd;
 }
-#lottery .current {
+.demo1 .current {
   position: absolute;
   top: 0;
   left: 50%;
@@ -36,34 +36,33 @@
 }
 
 
-#lottery2 {
+.demo2 {
     margin: 20px;
     position: relative;
-    width: 250px;
-    height: 54px;
+    width: 54px;
+    height: 250px;
     overflow: hidden;
     border: 2px solid red;
   }
-#lottery2 ul {
-  width: 9000px;
-  height: 50px;
+.demo2 ul {
+  width: 50px;
+  height: 5000px;
 }
-#lottery2 ul li {
-  float: left;
+.demo2 ul li {
   width: 50px;
   height: 50px;
   list-style: none;
   text-align: center;
   line-height: 50px;
   font-size: 25px;
-  border-right: 1px dashed #ddd;
+  border-bottom: 1px dashed #ddd;
 }
-#lottery2 .current {
+.demo2 .current {
   position: absolute;
-  top: 0;
-  left: 50%;
-  margin-left: -25px;
-  width: 52px;
+  top: 50%;
+  left: 0;
+  margin-top: -25px;
+  width: 50px;
   height: 50px;
   background: rgba(0, 0, 0, 0.3);
 }
