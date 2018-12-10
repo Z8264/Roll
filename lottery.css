@@ -3,7 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-.demo1{
+.demo1 {
   margin: 20px;
   position: relative;
   width: 500px;
@@ -35,15 +35,14 @@
   background: rgba(0, 0, 0, 0.3);
 }
 
-
 .demo2 {
-    margin: 20px;
-    position: relative;
-    width: 54px;
-    height: 250px;
-    overflow: hidden;
-    border: 2px solid red;
-  }
+  margin: 20px;
+  position: relative;
+  width: 54px;
+  height: 250px;
+  overflow: hidden;
+  border: 2px solid red;
+}
 .demo2 ul {
   width: 50px;
   height: 5000px;
@@ -65,4 +64,15 @@
   width: 50px;
   height: 50px;
   background: rgba(0, 0, 0, 0.3);
+}
+
+@keyframes marqueeAnimation {
+  from {
+    /* margin-left:0; */
+    transform: translateX(0px);
+  }
+  to {
+    /* margin-left:-700px; */
+    transform: translateX(-700px);
+  }
 }

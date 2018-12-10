@@ -15,8 +15,6 @@ class Roll {
      */
     options = Object.assign(
       {
-        startLocation: 0, // 初始化位置 0-居中   上或左-1   下或右- -1
-        startIndex: 0, // 初始位置显示的索引
         speed: 1, // 默认移动速度
         direction: "horizontal", // horizontal vertical
         autoStart: true
@@ -78,6 +76,10 @@ class Roll {
      */
     this._distance = 0;
     /**
+     * 前一帧的时间戳
+     */
+    this._lastTime = performance.now();
+    /**
      * 全局运行状态
      * @private
      */
@@ -91,16 +93,21 @@ class Roll {
     // 渲染动画
     this.loop = () => {
       if (this._running) {
-        if (this._speedListener()) this._speedListener = () => false;
-        if (this.speed <= 0 || this._stopListener()) {
+        let delta = (performance.now() - this._lastTime) * 0.06;
+
+        this._speedListener(delta);
+        if (this.speed <= 0 || this._stopListener(delta)) {
+          this._drawing = false;
           this.stop();
           return;
         }
 
-        let dist = (this.speed * this._itemDistance) / 60;
+        let dist = ((this.speed * this._itemDistance) / 60) * delta;
         this.offset += dist;
         this._distance += dist;
         this._render();
+
+        this._lastTime = performance.now();
 
         requestAnimationFrame(this.loop);
       }
@@ -170,12 +177,12 @@ class Roll {
    * 开始
    * @param {Function} cb
    */
-  start(cb = () => {}) {
+  start() {
     if (!this._running) {
       this.speed = this._speed;
       this._running = true;
+      this._lastTime = performance.now();
       requestAnimationFrame(this.loop);
-      cb();
     }
     return this;
   }
@@ -184,14 +191,15 @@ class Roll {
    * 停止
    * @param {Function} cb
    */
-  stop(cb = () => {}) {
+  stop() {
+    if (this._drawing) return;
     if (this._running) {
       this.speed = 0;
       this._running = false;
       this._stopping = false;
+      this._drawing = false;
       this._speedChange = () => false;
       this._stopListener = () => false;
-      cb();
     }
     return this;
   }
@@ -201,15 +209,16 @@ class Roll {
    * 如果参数为空，则直接执行stop方法
    * @param {Number} index
    */
-  stopAt(index, cb = () => {}) {
+  stopAt(index, cb = () => {}, hard = false) {
     if (!this._running || this._stopping) return;
+    if (this._drawing && !hard) return;
     this._stopping = true;
     if (index !== undefined) {
       const targetOffset = index * this._itemDistance;
       const minDistance =
         this.offset > targetOffset ? this._maxDistance - this.offset : 0;
       this._distance = 0;
-      this._stopListener = () => {
+      this._stopListener = delta => {
         if (
           this._distance >= minDistance &&
           this.offset >= index * this._itemDistance
@@ -232,32 +241,49 @@ class Roll {
    * @param {Number} time 时间 (s)
    * @param {Function} cb 回调函数
    */
-  speedTo(speed, time = 0, cb = () => {}) {
+  speedTo(speed, time = 0, cb = () => {}, hard = false) {
     if (speed == undefined) return;
+    if (this._drawing && !hard) return;
     if (!this._running) this.start();
     const a = time == 0 ? 0 : (speed - this.speed) / time / 60;
     if (a == 0) {
       this.speed = speed;
       cb();
     } else {
-      this._speedListener = () => {
-        this.speed += a;
+      this._speedListener = delta => {
+        this.speed += a * delta;
         if ((a > 0 && this.speed >= speed) || (a < 0 && this.speed <= speed)) {
           this.speed = speed;
+          this._speedListener = () => {};
           cb();
-          return true;
         }
-        return false;
       };
     }
   }
   /**
    * 抽奖
-   * @param {Number} index  中奖索引 
+   * @param {Number} index  中奖索引
    * @param {*} cb 回调函数
    */
-  draw(index, cb = () => {}) {
-    
+  draw(index = Math.floor(Math.random() * this.length), cb = () => {}) {
+    if (this._drawing) return;
+    this._drawing = true;
+    if (!this._running) this.start();
+    this.speedTo(
+      10,
+      3,
+      () => {
+        this.speedTo(
+          3,
+          2,
+          () => {
+            this.stopAt(index, cb, true);
+          },
+          true
+        );
+      },
+      true
+    );
   }
 
   /**

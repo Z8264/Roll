@@ -11,11 +11,6 @@
 </head>
 
 <body>
-    <div id="lottery" class="demo1">
-        <ul>
-            <li style="width:700px">这是一个非常棒的滚动条</li>
-        </ul>
-    </div>
     <div id="lottery2" class="demo1">
         <ul>
             <li>0</li>
@@ -39,24 +34,22 @@
         <div class="current"></div>
     </div>
     <script>
-        window.l = new Roll("#lottery", {
-            speed: .1,
-            autoStart: true
-        });
 
-        let dom = document.querySelector('#lottery');
+        let dom = document.querySelector('#lottery2');
         dom.addEventListener('mouseenter', () => {
-            l.stop();
+            l2.stop();
         })
-        dom.addEventListener('mouseout', () => {
-            l.start();
+        dom.addEventListener('mouseleave', () => {
+            l2.start();
         })
 
-        window.l2 = new Roll("#lottery2", {});
+        window.l2 = new Roll("#lottery2", {
+        });
 
         window.l3 = new Roll("#lottery3", {
             direction: "vertical"
         });
+
 
 
     </script>
